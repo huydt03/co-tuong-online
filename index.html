@@ -23,6 +23,30 @@
 	<script type="text/javascript" src="assets/libs/vue.js"></script>
 	<script type="text/javascript" src="assets/libs/socket.io.min.js"></script>
 	<script type="text/javascript" src="assets/libs/lib.js"></script>
+
+	<style type="text/css">
+		#right-bar{
+			display: none;
+		}
+		@media only screen and (max-width: 600px) {
+			.icon-menu{
+				display: block;
+			}
+			#right-bar:checked ~ section{
+				width: 0px;
+			}
+			.main-left{
+				margin: 0px;
+			}
+			.main-right{
+				position: absolute;
+				right: 0px;
+			}
+			.header-right{
+				width: auto;
+			}
+		}
+	</style>
 </head>
 <body>
 
@@ -100,12 +124,13 @@
 					</div>
 					<label class="btn" @click="roomAdd">+ Tạo phòng</label>
 				</div>
-				<div class="main-right">
+				<div class="header-right">
 					<div class="space-between icon-group flex-center">
 						<div></div>
 						<div class="flex">
 							<div class="icon icon-bell"></div>
 							<div class="icon icon-setting"></div>
+							<label class="icon icon-menu" for="right-bar"></label>
 						</div>
 					</div>
 				</div>
@@ -129,6 +154,7 @@
 						</tr>
 					</table>
 				</section>
+				<input type="checkbox" id="right-bar">
 				<section class="players main-right">
 					<table>
 						<tr>
@@ -170,6 +196,7 @@
 				<div class="flex icon-group">
 					<div class="icon icon-bell"></div>
 					<div class="icon icon-setting"></div>
+					<label class="icon icon-menu" for="right-bar"></label>
 				</div>
 			</header>
 			<main>
@@ -193,6 +220,8 @@
 						</h1>
 					</div>
 				</section>
+
+				<input type="checkbox" id="right-bar">
 				<section class="players main-right">
 					<div class="flex sit_players">
 						<div class="flex-center" @click="roomSit(0)">
