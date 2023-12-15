@@ -154,7 +154,7 @@
 						</tr>
 					</table>
 				</section>
-				<input type="checkbox" id="right-bar">
+				<input type="checkbox" checked id="right-bar">
 				<section class="players main-right">
 					<table>
 						<tr>
@@ -201,7 +201,7 @@
 			</header>
 			<main>
 				<section class="rooms main-left flex-center" style="position: relative;">
-					<div id="board1" style="width: 450px"></div>
+					<div id="board1" style="max-width: 450px; width: 100%"></div>
 					<div class="ready" v-if="me.ready == room.id && game.status == 0" @click="gameReady">Sẵng sàng</div>
 
 					<div class="modal modal-2 loading" auto-hide=1000 hide id="start">
