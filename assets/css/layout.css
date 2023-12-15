@@ -1,0 +1,229 @@
+#app{
+	max-width: 960px;
+	margin: auto;
+	height: 100vh;
+	box-shadow: 0px 0px 5px #ccc;
+}
+header, .space-between{
+	display: flex;
+	justify-content: space-between !important;
+}
+header{
+	padding: 0px 8px;
+	min-height: 40px;
+}
+main{
+	height: calc(100% - 40px);
+}
+section{
+	font-size: 2em;
+}
+.icon{
+	width: 22px;
+    height: 22px;
+    cursor: pointer;
+    background-size: 100% 100%;
+}
+.icon-group .icon{
+	margin-left: 8px;
+}
+.icon-back{
+	background-image: url('./../img/back.png');
+}
+.icon-setting{
+	background-image: url('./../img/setting.png');
+}
+.icon-bell{
+	background-image: url('./../img/bell.png');
+}
+.main-left{
+	width: 100%;
+	margin-right: 8px;
+}
+.main-right{
+	min-width: 200px;
+}
+
+.main-left, .main-right{
+	overflow: auto;
+}
+
+form{
+	text-align: left;
+	min-height: 200px;
+}
+.form-group input{
+	width: 100%;
+	border: 1px solid;
+}
+.form-group{
+	margin-bottom: 8px;
+	position: relative;
+}
+.form-group label{
+	font-size: 17px;
+	display: block;
+    min-width: 314px;
+}
+.form-control{
+	outline: none;
+	padding: 3px 6px;
+}
+
+.tabs{
+	width: 100%;
+	border-bottom: 1px solid;
+	margin-bottom: 16px;
+}
+.tabs label{
+	font-size: 18px;
+	padding: 4px 8px;
+	cursor: pointer;
+}
+.tabs label[active="true"]{
+	background: #fff;
+    border: 1px solid;
+    border-bottom: none;
+}
+form, form[active="false"]{
+	display: none;
+}
+form[active="true"]{
+	display: block;
+}
+.popup-title{
+	font-size: 20px;
+	margin-bottom: 6px;
+}
+[is_valid="true"], [is_valid="true"] input{
+	color: green;
+	border-color: green;
+}
+[is_valid="false"], [is_valid="false"] input{
+	color: red;
+	border-color: #ff000096;
+}
+.valid-msg{
+	position: absolute;
+    right: 0;
+    top: 4px;
+    color: #000;
+    font-size: 13px;
+}
+.loader {
+  width: 77px;
+  height: 77px;
+  border-radius: 50%;
+  display: inline-block;
+  border-top: 4px solid #FFF;
+  border-right: 4px solid transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.loader::after {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 77px;
+  height: 77px;
+  border-radius: 50%;
+  border-left: 4px solid #FF3D00;
+  border-bottom: 4px solid transparent;
+  animation: rotation 0.5s linear infinite reverse;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+
+.player{
+	position: relative;
+	text-align: left;
+}
+.player [online]{
+	width: 13px;
+    height: 13px;
+    background: green;
+    border-radius: 100%;
+}
+.player [online="0"]{
+	background: gray;
+}
+tr[is_me="true"]{
+	display: none;
+}
+
+.sit_players{
+	margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 2px;
+}
+.sit_players div{
+	width: 50%;
+    padding: 16px;
+    box-shadow: 0px 0px 3px #ccc;
+    margin: 2px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.sit_players div label{
+	position: absolute;
+    right: 8px;
+    top: 4px;
+    cursor: pointer;
+}
+.selected{
+	background: url('./../img/selected.png');
+	background-size: 100%;
+}
+.ready{
+	cursor: pointer;
+	position: absolute;
+    font-size: 20px;
+    background: #fff;
+    padding: 8px;
+    border-radius: 6px;
+}
+.sweet-title {
+  order: 2;
+  color: #fde9ff;
+  font-weight: 900;
+  line-height: 0.75em;
+  text-align: center;
+  text-shadow: 3px 1px 1px #4af7ff, 2px 2px 1px #165bfb, 4px 2px 1px #4af7ff,
+    3px 3px 1px #165bfb, 5px 3px 1px #4af7ff, 4px 4px 1px #165bfb,
+    6px 4px 1px #4af7ff, 5px 5px 1px #165bfb, 7px 5px 1px #4af7ff,
+    6px 6px 1px #165bfb, 8px 6px 1px #4af7ff, 7px 7px 1px #165bfb,
+    9px 7px 1px #4af7ff;
+
+  span {
+    display: block;
+    position: relative;
+  	font-size: clamp(3rem, 6vw, 6rem);
+
+    &:before {
+      content: attr(data-text);
+      position: absolute;
+      text-shadow: 2px 2px 1px #e94aa1, -1px -1px 1px #c736f9,
+        -2px 2px 1px #e94aa1, 1px -1px 1px #f736f9;
+      z-index: 1;
+    }
+
+    &:nth-child(1) {
+      padding-right: 2.25rem;
+    }
+
+    &:nth-child(2) {
+      padding-left: 2.25rem;
+    }
+  }
+}

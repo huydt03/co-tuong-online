@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cờ tướng online - Xiangqi - Chess</title>
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noodp,index,follow" />
+	<meta name=’revisit-after’ content=’1 days’ />
+	<meta name="description" content="Cờ tướng online | Xiangqi online | Chess game online" />
+	<meta http-equiv="content-language" content="vi" />
+	<meta property="og:image" content="assets/img/thumbnail.PNG">
+	<link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+	<link rel="stylesheet" type="text/css" href="assets/css/app.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/layout.css">
+	<link rel="stylesheet" type="text/css" href="assets/libs/xiangqi/xiangqiboard-0.3.3.min.css">
+	<script type="text/javascript" src="assets/libs/jquery-3.7.1.min.js"></script>
+	<script type="text/javascript" src="assets/libs/xiangqi/xiangqiboard-0.3.3.min.js"></script>
+	<script type="text/javascript" src="assets/libs/xiangqi/xiangqi.min.js"></script>
+	<!-- <script type="text/javascript" src="assets/libs/petite-vue.iife.js"></script> -->
+	<script type="text/javascript" src="assets/libs/vue.js"></script>
+	<script type="text/javascript" src="assets/libs/socket.io.min.js"></script>
+	<script type="text/javascript" src="assets/libs/lib.js"></script>
+</head>
+<body>
+
+	<div class="modal loading backdrop" id="loading">
+		<span class="loader"></span>
+	</div>
+	<div class="modal loading" offset-close btn-close hide id="popup">
+		<div class="container">
+			<div class="popup-title">Thông báo</div>
+		</div>
+	</div>
+	<div id="app">
+
+		<div class="modal tooltip" auto-hide hide id="tooltip">
+			<div class="container">{{ layout.popup_msg }}</div>
+		</div>
+		
+		<section v-if="screen == SCREEN.AUTH">
+			<header>
+				<div>version: {{ APP.VERSION }}</div>
+				<div>hotline: {{ APP.HOTLINE }}</div>
+			</header>
+			<main class="flex-column">
+				<div class="tabs">
+					<label :active="layout.tabs_auth" @click="layout.tabs_auth = true">{{ LANG.login }}</label>
+					<label :active="!layout.tabs_auth" @click="layout.tabs_auth = false">{{ LANG.register }}</label>
+				</div>
+				<div>
+					<form id="form-login" @submit="login" :active="layout.tabs_auth">
+						<div class="form-group">
+							<label>{{ LANG.username }}</label>
+							<input value="admin2" validates="required|between:6,24|username" class="form-control" type="text" name="username" :placeholder="LANG.username_holder">
+						</div>
+						<div class="form-group">
+							<label>{{ LANG.password }}</label>
+							<input value="111111" validates="required|between:6,24|password" class="form-control" type="password" name="password" :placeholder="LANG.password_holder">
+						</div>
+						<div class="flex-center space-between">
+							<button class="form-control">{{ LANG.login }}</button>
+							<div class="btn" @click="guest">Chơi nhanh</div>
+						</div>
+					</form>
+					<form id="form-register" @submit="login" :active="!layout.tabs_auth">
+						<div class="form-group">
+							<label>{{ LANG.username }}</label>
+							<input validates="required|between:6,24|username" class="form-control" type="text" name="username" :placeholder="LANG.username_holder">
+						</div>
+						<div class="form-group">
+							<label>{{ LANG.password }}</label>
+							<input validates="required|between:6,24|password" class="form-control" type="password" name="password" :placeholder="LANG.password_holder" id="password">
+						</div>
+						<div class="form-group">
+							<label>{{ LANG.re_password }}</label>
+							<input class="form-control" type="password" name="re_password" validates="required|between:6,24|password|same:password" :placeholder="LANG.re_password_holder">
+						</div>
+						<button class="form-control">{{ LANG.register }}</button>
+					</form>
+				</div>
+			</main>
+		</section>
+		
+		<section v-if="screen == SCREEN.MAIN">
+			MAIN Screen
+		</section>
+		
+		<section v-if="screen == SCREEN.ROOM">
+			<header>
+				<div class="main-left space-between" style="margin: 0px">
+					<div class="icon icon-back" @click="reset()">
+					</div>
+					<div>
+						<select class="form-control" @change="roomEnter(event.target.value)">
+							<option v-for="name, index in ROOMS" :selected="room.id == index" :value="index">{{ name }}</option>
+						</select>
+					</div>
+					<label class="btn" @click="roomAdd">+ Tạo phòng</label>
+				</div>
+				<div class="main-right">
+					<div class="space-between icon-group flex-center">
+						<div></div>
+						<div class="flex">
+							<div class="icon icon-bell"></div>
+							<div class="icon icon-setting"></div>
+						</div>
+					</div>
+				</div>
+			</header>
+			<main>
+				<section class="rooms main-left">
+					<table>
+						<tr>
+							<th>id</th>
+							<th>name</th>
+							<th>bet</th>
+							<th>count</th>
+							<th>status</th>
+						</tr>
+						<tr class="cursor" v-for="room in rooms" @click="roomEnter(room.id)">
+							<td>{{ room.id }}</td>
+							<td>{{ room.name }}</td>
+							<td>{{ room.bet }}</td>
+							<td>{{ room.n_players }}</td>
+							<td>{{ room.status }}</td>
+						</tr>
+					</table>
+				</section>
+				<section class="players main-right">
+					<table>
+						<tr>
+							<td>
+								<div class="player me">
+									<div class="info">
+										<label>{{ me.name }}</label>
+										<div class="room-id" v-if="me.room_id != room.id">{{me.room_id}}</div>
+									</div>
+									<div :online="me.online"></div>
+								</div>
+							</td>
+						</tr>
+						<tr v-for="player in players" :is_me="player.id == me.id">
+							<td>
+								<div class="player">
+									<div class="info">
+										<label>{{ player.name }}</label>
+									</div>
+									<div class="space-between">
+										<div :online="player.online"></div>
+										<div class="room-id cursor" v-if="player.room_id != room.id" @click="roomEnter(player.room_id)">#{{player.room_id}}</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</section>
+			</main>
+		</section>
+		
+		<section v-if="screen == SCREEN.GAME">
+			<header>
+				<div class="icon icon-back" @click="roomLeave()">
+				</div>
+				<div>
+					<h3>Bàn Chơi</h3>{{ room.id }}
+				</div>
+				<div class="flex icon-group">
+					<div class="icon icon-bell"></div>
+					<div class="icon icon-setting"></div>
+				</div>
+			</header>
+			<main>
+				<section class="rooms main-left flex-center" style="position: relative;">
+					<div id="board1" style="width: 450px"></div>
+					<div class="ready" v-if="me.ready == room.id && game.status == 0" @click="gameReady">Sẵng sàng</div>
+
+					<div class="modal modal-2 loading" auto-hide=1000 hide id="start">
+						<h1 class="sweet-title">
+						      <span data-text="Bắt Đầu">Bắt Đầu</span>
+						</h1>
+					</div>
+					<div class="modal modal-2 loading" auto-hide=1000 hide id="end-1">
+						<h1 class="sweet-title">
+						      <span data-text="Thắng">Thắng</span>
+						</h1>
+					</div>
+					<div class="modal modal-2 loading" auto-hide=1000 hide id="end-0">
+						<h1 class="sweet-title">
+						      <span data-text="Thua">Thua</span>
+						</h1>
+					</div>
+				</section>
+				<section class="players main-right">
+					<div class="flex sit_players">
+						<div class="flex-center" @click="roomSit(0)">
+							{{ players[game.p0]? players[game.p0].name : '...' }}
+							<label v-if="game.p0 == me.id" @click="roomStand">x</label>
+						</div>
+						<div class="flex-center" @click="roomSit(1)">
+							{{ players[game.p1]? players[game.p1].name : '...' }}
+							<label v-if="game.p1 == me.id" @click="roomStand">x</label>
+						</div>
+					</div>
+					<table>
+						<tr>
+							<td>
+								<div class="player me">
+									<div class="info">
+										<label>{{ me.name }}</label>
+										<div class="room-id" v-if="me.room_id != room.id">{{me.room_id}}</div>
+									</div>
+									<div :online="me.online"></div>
+								</div>
+							</td>
+						</tr>
+						<tr v-for="player in players" :is_me="player.id == me.id">
+							<td>
+								<div class="player">
+									<div class="info">
+										<label>{{ player.name }}</label>
+									</div>
+									<div class="space-between">
+									<div :online="player.online"></div>
+										<div class="cursor" v-if="me.is_master == 1" @click="roomKick(player.id)">x</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</section>
+			</main>
+		</section>
+
+	</div>
+	<script type="text/javascript" src="assets/js/app.js"></script>
+
+</body>
+</html>
