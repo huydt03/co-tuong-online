@@ -215,7 +215,7 @@ tr[is_me="true"]{
   span {
     display: block;
     position: relative;
-  	font-size: clamp(3rem, 6vw, 6rem);
+  	font-size: clamp(3rem, 2em, 6rem);
 
     &:before {
       content: attr(data-text);
